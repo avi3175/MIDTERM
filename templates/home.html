@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}  
+
+{% block title %}Home - Car Sales{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4 d-flex justify-content-between align-items-center g-2">
+    <div>
+        <img src="{% static 'images/cars.jpg' %}" alt="Car Image" class="img-fluid" style="max-height: 300px;"/>
+    </div>
+    <div>
+        <h1 class="fw-bold bg-danger text-white ">WELCOME TO THE CAR MANIA</h1>
+        <p class="fw-bold bg-danger text-white">Browse through a variety of cars and find your dream ride!</p>
+    </div>
+</div>
+
+<!-- Filter by Brand -->
+<div class="mb-4">
+    <h5 class="fw-bold text-danger text-bg-dark text-center">FILTER BY BRAND</h5>
+    <form method="GET" action="{% url 'home' %}" class="border-black" >
+        <select name="brand" class="form-select" onchange="this.form.submit()">
+            <option value="" class="fw-bold" >
+                All Brands
+            </option>
+            {% for brand in brands %}
+                <option  class="fw-bold text-bg-danger text-black " value="{{ brand.name }}"{% if request.GET.brand == brand.name %} selected{% endif %}>{{ brand.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+<!-- Car Cards -->
+<div class="row">
+    {% for car in cars %}
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.title }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ car.title }}</h5>
+                <p class="card-text">{{ car.description }}</p>
+                <p class="card-text"><strong>Price: ${{ car.price }}</strong></p>
+                <a href="{% url 'car_detail' car.id %}">
+                   <p class="bg-black text-danger text-center fw-bolder">
+                    {{ car.title }}
+                   </p>
+                </a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'place_order' car.id %}" class="btn btn-danger text-black fw-bold">Buy Now</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
